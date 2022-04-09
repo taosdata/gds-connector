@@ -1,2 +1,3 @@
 # gds-connector
-TDengine connector for Google Data Studio 
+
+TDengine connector for Google Data Studio
