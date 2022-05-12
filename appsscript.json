@@ -12,5 +12,8 @@
     "shortDescription": "Using this connector you can access the data store in TDengine.",
     "authType": ["NONE"],
     "feeType": ["FREE"]
+  },
+  "templates": {
+    "default": "cee570dc-3bd7-4f79-9a12-2dbb3b90e461"
   }
 }

@@ -108,10 +108,10 @@ TDengine's data type mapping with Google Data Studio's field's time. You can ref
 
 ## A Simple Example
 
-1. ![login page](https://github.com/taosdata/gds-connector/blob/master/resource/login_page.jpg)
+1. [login page](https://github.com/taosdata/gds-connector/blob/master/resource/login_page.jpg)
 
-2. [filled connection configuration](www)
+2. [filled connection configuration](https://github.com/taosdata/gds-connector/blob/master/resource/configuration.jpg)
 
-3. [get connected](www)
+3. [get connected](https://github.com/taosdata/gds-connector/blob/master/resource/getConnection.jpg)
 
-4. [create a simple report](www)
+4. [create a simple report](https://github.com/taosdata/gds-connector/blob/master/resource/report_template.jpg)
