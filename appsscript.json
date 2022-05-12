@@ -1,13 +1,16 @@
 {
   "runtimeVersion": "V8",
   "dataStudio": {
-    "name": "td demo - rest",
+    "name": "TDengine",
     "logoUrl": "https://www.taosdata.com/wp-content/uploads/2022/02/site-logo.png",
-    "company": "TAOS Data",
-    "companyUrl": "https://www.taosdata.com/",
-    "addonUrl": "https://github.com/taosdata/gds-connector",
-    "supportUrl": "Issues · github.com/taosdata/gds-connector",
-    "description": "TDengine connector.",
-    "sources": ["npm"]
+    "company": "TDengine.com",
+    "companyUrl": "https://tdengine.com/",
+    "addonUrl": "https://github.com/taosdata/gds-connector/blob/master/README.md",
+    "supportUrl": "https://github.com/taosdata/gds-connector/issues",
+    "description": "This a TDengine connector for Google Data Studio, user can access the data stored in TDengine. This connector is implemented based on TDengine\u0027s RESTful APIs.",
+    "sources": ["HOOLI_CHAT_LOG", "ENDFRAME_SERVER_STREAM", "RETINABYTE_USER_ANALYTICS"],
+    "shortDescription": "Using this connector you can access the data store in TDengine.",
+    "authType": ["NONE"],
+    "feeType": ["FREE"]
   }
 }

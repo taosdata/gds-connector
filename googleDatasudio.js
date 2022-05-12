@@ -9,7 +9,7 @@ function getAuthType() {
 }
 
 function isAdminUser() {
-    return false
+    return true
 }
 
 function getConfig(request) {
@@ -45,6 +45,17 @@ function getConfig(request) {
         .setId('TD_TABLE')
         .setName('Enter table')
         .setHelpText('e.g. logs')
+
+    config.newTextInput()
+        .setId('TD_START_TIME')
+        .setName('Enter query range start time')
+        .setHelpText('e.g. 2020-04-21 20:53:00')
+
+    config.newTextInput()
+        .setId('TD_END_TIME')
+        .setName('Enter query range end time')
+        .setHelpText('e.g. 2020-04-21 20:53:00')
+
 
     config.setDateRangeRequired(true);
 
@@ -103,7 +114,6 @@ function getSchema(request) {
 }
 
 function getType(fieldType, types) {
-    Logger.log(typeof fieldType);
     switch (fieldType) {
         case 'BOOL':
             return types.BOOLEAN
@@ -117,7 +127,6 @@ function getType(fieldType, types) {
         case "SMALLINT UNSIGNED":
         case "INT UNSIGNED":
         case "BIGINT UNSIGNED":
-            Logger.log(fieldType);
             return types.NUMBER
         case "BINARY":
         case "NCHAR":
@@ -131,8 +140,34 @@ function getType(fieldType, types) {
 }
 
 function getData(request) {
-    var start = new Date(request.dateRange.startDate).toISOString()
-    var end = new Date(request.dateRange.endDate).toISOString()
+    var timeRange = ""
+
+    if (request.configParams.TD_START_TIME && request.configParams.TD_END_TIME) {
+        var start = new Date(request.configParams.TD_START_TIME).toISOString()
+        var end = new Date(request.configParams.TD_END_TIME).toISOString()
+        timeRange = " where ts >= '" + start + "'and ts <='" + end + "'"
+    } else {
+        var haveStart = false
+        var haveEnd = false
+        if (request.dateRange && request.dateRange.startDate) {
+            haveStart = true
+            var start = new Date(request.dateRange.startDate).toISOString()
+        }
+        if (request.dateRange && request.dateRange.endDate) {
+            haveEnd = true
+            var end = new Date(request.dateRange.endDate).toISOString()
+        }
+        if (haveStart || haveEnd) {
+            if (haveStart && haveEnd) {
+                timeRange = " where ts >= '" + start + "'and ts <='" + end + "'"
+            } else if (haveStart) {
+                timeRange = " where ts >= '" + start + "'"
+            } else {
+                timeRange = " where ts <= '" + end + "'"
+            }
+        }
+    }
+
     var names = request.fields.map(function (field) { return field.name })
     var allFields = getFields(request, true)
     var allMap = {}
@@ -140,17 +175,15 @@ function getData(request) {
     for (var field of allFields) {
         allMap[field.name] = field
     }
-    Logger.log(allMap)
     for (var name of names) {
         field = allMap[name]
         if (field) {
             fieldsFiltered.push(field)
         }
     }
-    Logger.log(fieldsFiltered)
     var nameStr = names.join(',')
-    var resp = doQUery(request.configParams.TD_URL + '/rest/sqlutc/' + request.configParams.TD_DATABASE, "select " + nameStr + " from " + request.configParams.TD_TABLE + " where ts >= '" + start + "'and ts <='" + end + "'", request)
-    // var resp = doQUery(request.configParams.TD_URL + '/rest/sqlutc/' + request.configParams.TD_DATABASE, "select " + nameStr + " from " + request.configParams.TD_TABLE,request)
+    var resp = doQUery(request.configParams.TD_URL + '/rest/sqlutc/' + request.configParams.TD_DATABASE, "select " + nameStr + " from " + request.configParams.TD_TABLE + timeRange + " limit 1000000", request)
+    //Logger.log("[response]:" + resp)
     var body = resp.getContentText();
     var json = JSON.parse(body)
     var rows = []
@@ -159,8 +192,6 @@ function getData(request) {
         for (var i in json.data) {
             var d = []
             for (var j = 0; j < fieldsFiltered.length; j++) {
-                Logger.log("fieldsFiltered[j].dataType" + fieldsFiltered[j].dataType);
-                Logger.log("types.YEAR_MONTH_DAY_SECOND" + types.YEAR_MONTH_DAY_SECOND);
                 if (fieldsFiltered[j].dataType == types.BOOLEAN) {
                     d.push(!!json.data[i][j])
                 } else if (fieldsFiltered[j].semantics && fieldsFiltered[j].semantics.semanticType && fieldsFiltered[j].semantics.semanticType == types.YEAR_MONTH_DAY_SECOND) {
@@ -175,7 +206,6 @@ function getData(request) {
                     d.push(json.data[i][j])
                 }
             }
-            Logger.log(d)
             rows.push({ values: d })
         }
     } catch (e) {
@@ -186,20 +216,19 @@ function getData(request) {
         rows: rows,
         filtersApplied: false,
     }
-    Logger.log(JSON.stringify(ret))
     return ret
 }
 
 function doQUery(url, body, request) {
     var cache = CacheService.getScriptCache()
-    var basic = Utilities.base64Encode(request.configParams.TD_USER + ':' + request.configParams.TD_PASSWORD);
+    var basic = 'Basic ' + Utilities.base64Encode(request.configParams.TD_USER + ':' + request.configParams.TD_PASSWORD);
     var options = {
         method: 'POST',
         payload: body,
-        headers: { 'Authorization': 'Basic ' + basic }
+        headers: { 'Authorization': basic }
     }
-    Logger.log(url);
-    Logger.log(options);
+    //Logger.log(url);
+    //Logger.log(options);
     var response = UrlFetchApp.fetch(url, options);
     return response
 }
