@@ -2,7 +2,7 @@
   "runtimeVersion": "V8",
   "dataStudio": {
     "name": "TDengine",
-    "logoUrl": "https://www.taosdata.com/wp-content/uploads/2022/02/site-logo.png",
+    "logoUrl": "https://github.com/taosdata/gds-connector/blob/master/resource/logo.png",
     "company": "TDengine.com",
     "companyUrl": "https://tdengine.com/",
     "addonUrl": "https://github.com/taosdata/gds-connector/blob/master/README.md",

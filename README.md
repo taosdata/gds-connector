@@ -108,6 +108,8 @@ TDengine's data type mapping with Google Data Studio's field's time. You can ref
 
 ## A Simple Example
 
+refer report [template](https://datastudio.google.com/reporting/cee570dc-3bd7-4f79-9a12-2dbb3b90e461/page/4nfsC)
+
 1. [login page](https://github.com/taosdata/gds-connector/blob/master/resource/login_page.jpg)
 
 2. [filled connection configuration](https://github.com/taosdata/gds-connector/blob/master/resource/configuration.jpg)
