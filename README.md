@@ -15,7 +15,7 @@ This document include these content:
 
 * [Install TDengine server](https://tdengine.com/getting-started/install), and the server must be accessible for Google Data Studio.
 
-* [Install taosadapter]([ench/xiaolei/TD-15480-publish-gds](https://github.com/taosdata/taosadapter#install-taosadapter) and make sure [taosadapter](https://github.com/taosdata/taosadapter#startstop-taosadapter) has been started successfully.
+* [Install taosadapter](https://github.com/taosdata/taosadapter#install-taosadapter) and make sure [taosadapter](https://github.com/taosdata/taosadapter#startstop-taosadapter) has been started successfully.
   
 ## Connect Configuration Information Description
 
@@ -108,8 +108,6 @@ TDengine's data type mapping with Google Data Studio's field's time. You can ref
 | TIMESTAMP              | YEAR_MONTH_DAY_SECOND |
 
 ## A Simple Example
-
-refer report [template](https://datastudio.google.com/reporting/cee570dc-3bd7-4f79-9a12-2dbb3b90e461/page/4nfsC)
 
 1. [login page](https://github.com/taosdata/gds-connector/blob/master/resource/login_page.jpg)
 
