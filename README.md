@@ -15,7 +15,7 @@ This document include these content:
 
 * [Install TDengine server](https://tdengine.com/getting-started/install), and the server must be accessible for Google Data Studio.
 
-* [Install taosadapter]([ench/xiaolei/TD-15480-publish-gds](https://github.com/taosdata/taosadapter#install-taosadapter) and make sure [taosadapter](https://github.com/taosdata/taosadapter#startstop-taosadapter) has been started successfully.
+* [Install taosAdapter]([ench/xiaolei/TD-15480-publish-gds](https://github.com/taosdata/taosadapter#install-taosadapter) and make sure [taosAdapter](https://github.com/taosdata/taosadapter#startstop-taosadapter) has been started successfully.
   
 ## Connect Configuration Information Description
 
@@ -118,3 +118,9 @@ refer report [template](https://datastudio.google.com/reporting/cee570dc-3bd7-4f
 3. [get connected](https://github.com/taosdata/gds-connector/blob/master/resource/getConnection.jpg)
 
 4. [create a simple report](https://github.com/taosdata/gds-connector/blob/master/resource/report_template.jpg)
+
+## Term And Privacy
+
+### [Privacy Policy](https://tdengine.com/privacy-policy)
+
+### [Terms of Use](https://tdengine.com/terms-of-service)
