@@ -2,7 +2,7 @@
   "runtimeVersion": "V8",
   "dataStudio": {
     "name": "TDengine",
-    "logoUrl": "https://github.com/taosdata/gds-connector/blob/master/resource/logo.png",
+    "logoUrl": "https://raw.githubusercontent.com/taosdata/gds-connector/master/resource/logo.png",
     "company": "TDengine.com",
     "companyUrl": "https://tdengine.com/",
     "addonUrl": "https://github.com/taosdata/gds-connector/blob/master/README.md",
