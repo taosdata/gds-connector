@@ -13,9 +13,9 @@ This document include these content:
 
 ## Prerequisite
 
-* [Install TDengine server](https://tdengine.com/getting-started/install), and the server must be accessible for Google Data Studio.
+* [Install TDengine server](https://tdengine.com/getting-started/install), and the server must be accessible for Google Data Studio(host is publicly-accessible).
 
-* [Install taosadapter](https://github.com/taosdata/taosadapter#install-taosadapter) and make sure [taosadapter](https://github.com/taosdata/taosadapter#startstop-taosadapter) has been started successfully.
+* [Install taosAdapter](https://github.com/taosdata/taosadapter#install-taosadapter) and make sure [taosAdapter](https://github.com/taosdata/taosadapter#startstop-taosadapter) has been started successfully.
   
 ## Connect Configuration Information Description
 
