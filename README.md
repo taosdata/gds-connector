@@ -1,4 +1,4 @@
-# gds-connector
+# TDengine Google Data Studio Connector
 
 TDengine connector for Google Data Studio. This connector is based on TDengine's [RESTful](https://tdengine.com/docs/en/v2.0/connector#restful) APIs.
 This document include these content:
@@ -107,12 +107,20 @@ TDengine's data type mapping with Google Data Studio's field's time. You can ref
 | JSON                   | TEXT                  |
 | TIMESTAMP              | YEAR_MONTH_DAY_SECOND |
 
-## A Simple Example
+## A Simple Using Example
 
-1. [login page](https://github.com/taosdata/gds-connector/blob/master/resource/login_page.jpg)
+### Authorize Page
 
-2. [filled connection configuration](https://github.com/taosdata/gds-connector/blob/master/resource/configuration.jpg)
+![Authorize page](./resource/before_authorize.png)
 
-3. [get connected](https://github.com/taosdata/gds-connector/blob/master/resource/getConnection.jpg)
+### Login Config Page
 
-4. [create a simple report](https://github.com/taosdata/gds-connector/blob/master/resource/report_template.jpg)
+![login config](./resource/login_page.jpg)
+
+### Got Connection
+
+![got connection](./resource/getConnection.jpg)
+
+### Example Report Template
+
+![report example](./resource/report_template.jpg)
