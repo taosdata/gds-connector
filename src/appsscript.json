@@ -1,4 +1,5 @@
 {
+  "oauthScopes": ["https://www.googleapis.com/auth/script.external_request"],
   "runtimeVersion": "V8",
   "dataStudio": {
     "name": "TDengine",
@@ -6,22 +7,13 @@
     "company": "TDengine.com",
     "companyUrl": "https://tdengine.com/",
     "addonUrl": "https://github.com/taosdata/gds-connector/blob/master/README.md",
-    "supportUrl": "https://github.com/taosdata/gds-connector/issues/new?title=TDengine%20GDS%20connector%20Issue",
-    "privacyPolicyUrl": "https://tdengine.com/privacy-policy",
-    "termsOfServiceUrl": "https://tdengine.com/terms-of-service",
+    "supportUrl": "https://github.com/taosdata/gds-connector/issues/new?title\u003dTDengine%20GDS%20connector%20Issue",
     "description": "This a TDengine connector for Google Data Studio, user can access the data stored in TDengine. This connector is implemented based on TDengine\u0027s RESTful APIs.",
-    "sources": ["HOOLI_CHAT_LOG"],
+    "sources": ["TDENGINE"],
     "shortDescription": "Using this connector you can access the data store in TDengine.",
     "authType": ["NONE"],
     "feeType": ["FREE"],
-    "templates": {
-      "default": "cee570dc-3bd7-4f79-9a12-2dbb3b90e461"
-    }
-  },
-  "urlFetchWhitelist": [
-    "http://*:*"
-  ],
-  "oauthScopes": [
-    "https://www.googleapis.com/auth/script.external_request"
-  ]
+    "privacyPolicyUrl": "https://tdengine.com/privacy-policy",
+    "termsOfServiceUrl": "https://tdengine.com/terms-of-service"
+  }
 }
