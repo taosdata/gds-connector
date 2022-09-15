@@ -30,15 +30,20 @@ URL format should follow this syntax: `http://hostname:port`. In the URL the hos
 http://norepeat.space:6041
 ```
 
+### TDengine Cloud Token
+
+_**Unnecessary configuration,only for TDengine CLoud**_
+This token is from your TDengine cloud, which should be corresponding with the cloud URL.
+
 ### username
 
-_**Necessary configuration**_
+_**Unnecessary configuration,cloud be empty if use TDengine Cloud Token**_
 
 The user name which has the access priority of the database that you want to query. In the example, the username is `root` and that is the default user of TDengine.
 
 ### password
 
-_**Necessary configuration**_
+_**Unnecessary configuration,cloud be empty if use TDengine Cloud Token**_
 
 The password is corresponded with the username you have entered in the previous text field. In the example, `taosdata` is the default password to TDengine's default user `root`。
 
@@ -115,7 +120,7 @@ TDengine's data type mapping with Google Data Studio's field's time. You can ref
 
 ### Login Config Page
 
-![login config](./resource/login_page.jpg)
+![login config](./resource/login_page.PNG)
 
 ### Got Connection
 

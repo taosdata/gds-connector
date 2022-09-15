@@ -26,15 +26,20 @@ function getConfig(request) {
         .setPlaceholder('http://hostname:port');
 
     config.newTextInput()
+        .setId('CLOUD_TOKEN')
+        .setName('TDengine Cloud Token')
+        .setHelpText('Only for TDengine Cloud Token.');
+
+    config.newTextInput()
         .setId('TD_USER')
         .setName('Enter username')
-        .setHelpText('e.g. root')
+        .setHelpText('Unnecessary if use TDengine cloud token')
         .setPlaceholder('root');
 
     config.newTextInput()
         .setId('TD_PASSWORD')
         .setName('Enter passwrod')
-        .setHelpText('e.g. connect to tdengine2')
+        .setHelpText('Unnecessary if use TDengine cloud token')
         .setPlaceholder('taosdata');
 
     config.newTextInput()
@@ -67,18 +72,21 @@ function getFields(request, cached) {
     if (request.configParams.TD_URL == undefined) {
         throw new Error("URL should not be empty" + request.configParams.TD_URL);
     }
-    if (request.configParams.TD_USER == undefined) {
-        throw new Error("username should not be empty");
-    }
-    if (request.configParams.TD_PASSWORD == undefined) {
-        throw new Error("passoword should not be empty");
-    }
     if (request.configParams.TD_DATABASE == undefined) {
         throw new Error("database should not be empty");
     }
     if (request.configParams.TD_TABLE == undefined) {
         throw new Error("table should not be empty")
     }
+    if (request.configParams.CLOUD_TOKEN == undefined) {
+        if (request.configParams.TD_USER == undefined) {
+            throw new Error("Username should not be empty if not use TDengine Cloud Token");
+        }
+        if (request.configParams.TD_PASSWORD == undefined) {
+            throw new Error("Password should not be empty if not use TDengine Cloud Token");
+        }
+    }
+
     var cache = CacheService.getScriptCache()
     var cacheKey = [
         request.configParams.TD_URL,
@@ -98,7 +106,17 @@ function getFields(request, cached) {
     }
 
     try {
-        var responseJson = doQUery(request.configParams.TD_URL + '/rest/sqlutc/' + request.configParams.TD_DATABASE, 'describe ' + request.configParams.TD_TABLE, request)
+        // update client version 
+        clientVersion = getClientVersion(request.configParams.TD_URL + '/rest/sql/', request);
+        Logger.log("getField client version:" + clientVersion)
+        // if client version is 3,use /rest/sql/
+        if (clientVersion == '3') {
+            // if client version is 3,use /rest/sql/
+            var responseJson = doQUeryV3(request.configParams.TD_URL + '/rest/sql/' + request.configParams.TD_DATABASE, 'describe ' + request.configParams.TD_TABLE, request)
+        } else {
+            // if client version is 2,use /rest/sqlutc/
+            var responseJson = doQUery(request.configParams.TD_URL + '/rest/sqlutc/' + request.configParams.TD_DATABASE, 'describe ' + request.configParams.TD_TABLE, request)
+        }
     } catch (e) {
         throwConnectorError(e.message, true);
     }
@@ -115,7 +133,6 @@ function getFields(request, cached) {
             fields.newMetric().setId(name).setName(name).setType(getType(fieldType, types))
         }
     }
-
 
     var cacheValue = JSON.stringify(fields.build())
     Logger.log(
@@ -206,7 +223,15 @@ function getData(request) {
         }
         var nameStr = names.join(',')
 
-        var json = doQUery(request.configParams.TD_URL + '/rest/sqlutc/' + request.configParams.TD_DATABASE, "select " + nameStr + " from " + request.configParams.TD_TABLE + timeRange + " limit 1000000", request)
+        clientVersion = getClientVersion(request.configParams.TD_URL + '/rest/sql/', request);
+        // if client version is 3,use /rest/sql/
+        if (clientVersion == '3') {
+            // if client version is 2,use /rest/sqlutc/
+            var json = doQUeryV3(request.configParams.TD_URL + '/rest/sql/' + request.configParams.TD_DATABASE, "select " + nameStr + " from " + request.configParams.TD_TABLE + timeRange + " limit 1000000", request)
+        } else {
+            // if client version is 2,use /rest/sqlutc/
+            var json = doQUery(request.configParams.TD_URL + '/rest/sqlutc/' + request.configParams.TD_DATABASE, "select " + nameStr + " from " + request.configParams.TD_TABLE + timeRange + " limit 1000000", request)
+        }
         //    Logger.log("[response]:"+resp)
         //    var body = resp.getContentText();
         //    var json = JSON.parse(body)
@@ -256,7 +281,7 @@ function doQUery(url, body, request) {
     //    Logger.log(options);
 
     var response = UrlFetchApp.fetch(url, options);
-    Logger.log("doQuery:" + response);
+    //Logger.log("doQuery:" + response);
     if (response.getResponseCode() == 200) {
         var body = response.getContentText();
         var json = JSON.parse(body)
@@ -271,6 +296,7 @@ function doQUery(url, body, request) {
     } else {
         throw Error("fetch reqest fail,code:" + response.getResponseCode());
     }
+
 }
 
 /**
@@ -286,5 +312,6 @@ function throwConnectorError(message, userSafe) {
     if (userSafe) {
         message = 'DS_USER:' + message;
     }
+
     throw new Error(message);
 }
