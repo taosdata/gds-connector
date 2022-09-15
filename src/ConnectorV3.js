@@ -5,7 +5,7 @@
  function getClientVersion(url, request) {
 
     var urlv3 = url
-    // For TDengine cloud use clound token to instead user/password
+    // For TDengine cloud use cloud token to instead user/password
     if (request.configParams.CLOUD_TOKEN) {
         urlv3 = urlv3 + "?token=" + request.configParams.CLOUD_TOKEN
         var options = {

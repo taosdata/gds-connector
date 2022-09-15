@@ -32,12 +32,12 @@ http://norepeat.space:6041
 
 ### TDengine Cloud Token
 
-_**Unnecessary configuration,only for TDengine CLoud**_
+_**Unnecessary configuration,only for TDengine Cloud**_
 This token is from your TDengine cloud, which should be corresponding with the cloud URL.
 
 ### username
 
-_**Unnecessary configuration,cloud be empty if use TDengine Cloud Token**_
+_**Unnecessary configuration,could be empty if use TDengine Cloud Token**_
 
 The user name which has the access priority of the database that you want to query. In the example, the username is `root` and that is the default user of TDengine.
 
