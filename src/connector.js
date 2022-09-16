@@ -13,49 +13,72 @@ function isAdminUser() {
 }
 
 function getConfig(request) {
+    var configParams = request.configParams;
+    var isFirstRequest = configParams === undefined;
+
     var config = cc.getConfig();
+    if (isFirstRequest) {
+        config.setIsSteppedConfig(true);
+    }
 
-    config.newInfo()
-        .setId('TDengine')
-        .setText('TDengine plugin');
+    config.newSelectSingle()
+        .setId('DATA_SOURCE')
+        .setName('Data Source')
+        .setIsDynamic(true)
+        .addOption(config.newOptionBuilder().setLabel("TDengine Cloud").setValue("cloud"))
+        .addOption(config.newOptionBuilder().setLabel("TDengine Server").setValue("server"))
 
-    config.newTextInput()
-        .setId('TD_URL')
-        .setName('Enter URL')
-        .setHelpText('e.g. http://127.0.0.1:6041')
-        .setPlaceholder('http://hostname:port');
+    if (!isFirstRequest) {
+        config.newInfo()
+            .setId('TDengine')
+            .setText('TDengine plugin');
 
-    config.newTextInput()
-        .setId('TD_USER')
-        .setName('Enter username')
-        .setHelpText('e.g. root')
-        .setPlaceholder('root');
+        config.newTextInput()
+            .setId('TD_URL')
+            .setName('Enter URL')
+            .setHelpText('e.g. http://127.0.0.1:6041')
+            .setPlaceholder('http://hostname:port');
+        if (configParams.DATA_SOURCE === 'cloud') {
+            config.newTextInput()
+                .setId('CLOUD_TOKEN')
+                .setName('TDengine Cloud Token')
+                .setHelpText('Only for TDengine Cloud.');
 
-    config.newTextInput()
-        .setId('TD_PASSWORD')
-        .setName('Enter passwrod')
-        .setHelpText('e.g. connect to tdengine2')
-        .setPlaceholder('taosdata');
+        } else {
+            config.newTextInput()
+                .setId('TD_USER')
+                .setName('Enter username')
+                .setHelpText('e.g. root')
+                .setPlaceholder('root');
 
-    config.newTextInput()
-        .setId('TD_DATABASE')
-        .setName('Enter database')
-        .setHelpText('e.g. log')
+            config.newTextInput()
+                .setId('TD_PASSWORD')
+                .setName('Enter passwrod')
+                .setHelpText('e.g. pass connect to TDengine')
+                .setPlaceholder('taosdata');
 
-    config.newTextInput()
-        .setId('TD_TABLE')
-        .setName('Enter table')
-        .setHelpText('e.g. logs')
+        }
 
-    config.newTextInput()
-        .setId('TD_START_TIME')
-        .setName('Enter query range start time')
-        .setHelpText('e.g. 2020-04-21 20:53:00')
+        config.newTextInput()
+            .setId('TD_DATABASE')
+            .setName('Enter database')
+            .setHelpText('e.g. log')
 
-    config.newTextInput()
-        .setId('TD_END_TIME')
-        .setName('Enter query range end time')
-        .setHelpText('e.g. 2020-04-21 20:53:00')
+        config.newTextInput()
+            .setId('TD_TABLE')
+            .setName('Enter table')
+            .setHelpText('e.g. logs')
+
+        config.newTextInput()
+            .setId('TD_START_TIME')
+            .setName('Enter query range start time')
+            .setHelpText('e.g. 2020-04-21 20:53:00')
+
+        config.newTextInput()
+            .setId('TD_END_TIME')
+            .setName('Enter query range end time')
+            .setHelpText('e.g. 2020-04-21 20:53:00')
+    }
 
     config.setDateRangeRequired(true);
 
@@ -67,18 +90,21 @@ function getFields(request, cached) {
     if (request.configParams.TD_URL == undefined) {
         throw new Error("URL should not be empty" + request.configParams.TD_URL);
     }
-    if (request.configParams.TD_USER == undefined) {
-        throw new Error("username should not be empty");
-    }
-    if (request.configParams.TD_PASSWORD == undefined) {
-        throw new Error("passoword should not be empty");
-    }
     if (request.configParams.TD_DATABASE == undefined) {
         throw new Error("database should not be empty");
     }
     if (request.configParams.TD_TABLE == undefined) {
         throw new Error("table should not be empty")
     }
+    if (request.configParams.CLOUD_TOKEN == undefined) {
+        if (request.configParams.TD_USER == undefined) {
+            throw new Error("Username should not be empty if not use TDengine Cloud Token");
+        }
+        if (request.configParams.TD_PASSWORD == undefined) {
+            throw new Error("Password should not be empty if not use TDengine Cloud Token");
+        }
+    }
+
     var cache = CacheService.getScriptCache()
     var cacheKey = [
         request.configParams.TD_URL,
@@ -98,7 +124,17 @@ function getFields(request, cached) {
     }
 
     try {
-        var responseJson = doQUery(request.configParams.TD_URL + '/rest/sqlutc/' + request.configParams.TD_DATABASE, 'describe ' + request.configParams.TD_TABLE, request)
+        // update client version 
+        clientVersion = getClientVersion(request.configParams.TD_URL + '/rest/sql/', request);
+        Logger.log("getField client version:" + clientVersion)
+        // if client version is 3,use /rest/sql/
+        if (clientVersion == '3') {
+            // if client version is 3,use /rest/sql/
+            var responseJson = doQUeryV3(request.configParams.TD_URL + '/rest/sql/' + request.configParams.TD_DATABASE, 'describe ' + request.configParams.TD_TABLE, request)
+        } else {
+            // if client version is 2,use /rest/sqlutc/
+            var responseJson = doQUery(request.configParams.TD_URL + '/rest/sqlutc/' + request.configParams.TD_DATABASE, 'describe ' + request.configParams.TD_TABLE, request)
+        }
     } catch (e) {
         throwConnectorError(e.message, true);
     }
@@ -115,7 +151,6 @@ function getFields(request, cached) {
             fields.newMetric().setId(name).setName(name).setType(getType(fieldType, types))
         }
     }
-
 
     var cacheValue = JSON.stringify(fields.build())
     Logger.log(
@@ -206,7 +241,15 @@ function getData(request) {
         }
         var nameStr = names.join(',')
 
-        var json = doQUery(request.configParams.TD_URL + '/rest/sqlutc/' + request.configParams.TD_DATABASE, "select " + nameStr + " from " + request.configParams.TD_TABLE + timeRange + " limit 1000000", request)
+        clientVersion = getClientVersion(request.configParams.TD_URL + '/rest/sql/', request);
+        // if client version is 3,use /rest/sql/
+        if (clientVersion == '3') {
+            // if client version is 2,use /rest/sqlutc/
+            var json = doQUeryV3(request.configParams.TD_URL + '/rest/sql/' + request.configParams.TD_DATABASE, "select " + nameStr + " from " + request.configParams.TD_TABLE + timeRange + " limit 1000000", request)
+        } else {
+            // if client version is 2,use /rest/sqlutc/
+            var json = doQUery(request.configParams.TD_URL + '/rest/sqlutc/' + request.configParams.TD_DATABASE, "select " + nameStr + " from " + request.configParams.TD_TABLE + timeRange + " limit 1000000", request)
+        }
         //    Logger.log("[response]:"+resp)
         //    var body = resp.getContentText();
         //    var json = JSON.parse(body)
@@ -256,7 +299,7 @@ function doQUery(url, body, request) {
     //    Logger.log(options);
 
     var response = UrlFetchApp.fetch(url, options);
-    Logger.log("doQuery:" + response);
+    //Logger.log("doQuery:" + response);
     if (response.getResponseCode() == 200) {
         var body = response.getContentText();
         var json = JSON.parse(body)
@@ -271,6 +314,7 @@ function doQUery(url, body, request) {
     } else {
         throw Error("fetch reqest fail,code:" + response.getResponseCode());
     }
+
 }
 
 /**
@@ -286,5 +330,6 @@ function throwConnectorError(message, userSafe) {
     if (userSafe) {
         message = 'DS_USER:' + message;
     }
+
     throw new Error(message);
 }
