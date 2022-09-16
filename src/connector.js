@@ -13,54 +13,72 @@ function isAdminUser() {
 }
 
 function getConfig(request) {
+    var configParams = request.configParams;
+    var isFirstRequest = configParams === undefined;
+
     var config = cc.getConfig();
+    if (isFirstRequest) {
+        config.setIsSteppedConfig(true);
+    }
 
-    config.newInfo()
-        .setId('TDengine')
-        .setText('TDengine plugin');
+    config.newSelectSingle()
+        .setId('DATA_SOURCE')
+        .setName('Data Source')
+        .setIsDynamic(true)
+        .addOption(config.newOptionBuilder().setLabel("TDengine Cloud").setValue("cloud"))
+        .addOption(config.newOptionBuilder().setLabel("TDengine Server").setValue("server"))
 
-    config.newTextInput()
-        .setId('TD_URL')
-        .setName('Enter URL')
-        .setHelpText('e.g. http://127.0.0.1:6041')
-        .setPlaceholder('http://hostname:port');
+    if (!isFirstRequest) {
+        config.newInfo()
+            .setId('TDengine')
+            .setText('TDengine plugin');
 
-    config.newTextInput()
-        .setId('CLOUD_TOKEN')
-        .setName('TDengine Cloud Token')
-        .setHelpText('Only for TDengine Cloud Token.');
+        config.newTextInput()
+            .setId('TD_URL')
+            .setName('Enter URL')
+            .setHelpText('e.g. http://127.0.0.1:6041')
+            .setPlaceholder('http://hostname:port');
+        if (configParams.DATA_SOURCE === 'cloud') {
+            config.newTextInput()
+                .setId('CLOUD_TOKEN')
+                .setName('TDengine Cloud Token')
+                .setHelpText('Only for TDengine Cloud.');
 
-    config.newTextInput()
-        .setId('TD_USER')
-        .setName('Enter username')
-        .setHelpText('Unnecessary if use TDengine cloud token')
-        .setPlaceholder('root');
+        } else {
+            config.newTextInput()
+                .setId('TD_USER')
+                .setName('Enter username')
+                .setHelpText('e.g. root')
+                .setPlaceholder('root');
 
-    config.newTextInput()
-        .setId('TD_PASSWORD')
-        .setName('Enter passwrod')
-        .setHelpText('Unnecessary if use TDengine cloud token')
-        .setPlaceholder('taosdata');
+            config.newTextInput()
+                .setId('TD_PASSWORD')
+                .setName('Enter passwrod')
+                .setHelpText('e.g. pass connect to TDengine')
+                .setPlaceholder('taosdata');
 
-    config.newTextInput()
-        .setId('TD_DATABASE')
-        .setName('Enter database')
-        .setHelpText('e.g. log')
+        }
 
-    config.newTextInput()
-        .setId('TD_TABLE')
-        .setName('Enter table')
-        .setHelpText('e.g. logs')
+        config.newTextInput()
+            .setId('TD_DATABASE')
+            .setName('Enter database')
+            .setHelpText('e.g. log')
 
-    config.newTextInput()
-        .setId('TD_START_TIME')
-        .setName('Enter query range start time')
-        .setHelpText('e.g. 2020-04-21 20:53:00')
+        config.newTextInput()
+            .setId('TD_TABLE')
+            .setName('Enter table')
+            .setHelpText('e.g. logs')
 
-    config.newTextInput()
-        .setId('TD_END_TIME')
-        .setName('Enter query range end time')
-        .setHelpText('e.g. 2020-04-21 20:53:00')
+        config.newTextInput()
+            .setId('TD_START_TIME')
+            .setName('Enter query range start time')
+            .setHelpText('e.g. 2020-04-21 20:53:00')
+
+        config.newTextInput()
+            .setId('TD_END_TIME')
+            .setName('Enter query range end time')
+            .setHelpText('e.g. 2020-04-21 20:53:00')
+    }
 
     config.setDateRangeRequired(true);
 
