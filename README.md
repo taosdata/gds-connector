@@ -1,13 +1,13 @@
-# TDengine Google Data Studio Connector
+# TDengine Google Looker Studio Connector
 
-TDengine connector for Google Data Studio. This connector is based on TDengine's [RESTful](https://tdengine.com/docs/en/v2.0/connector#restful) APIs and can connect with either a TDengine server with taosAdapter installed or a TDengine cloud instance.
+TDengine connector for Google Looker Studio. This connector is based on TDengine's [RESTful](https://tdengine.com/docs/en/v2.0/connector#restful) APIs and can connect with either a TDengine server with taosAdapter installed or a TDengine cloud instance.
 This document includes the following content:
 
-* Prerequisite of using TDengine connector for Google Data Studio.
+* Prerequisite of using TDengine connector for Google Looker Studio.
 
 * Connect configuration information.
 
-* Relationship with Google Data Studio [ConceptType](https://developers.google.com/datastudio/connector/reference#concepttype) and [DataType](https://developers.google.com/datastudio/connector/reference#datatype).
+* Relationship with Google Looker Studio [ConceptType](https://developers.google.com/datastudio/connector/reference#concepttype) and [DataType](https://developers.google.com/datastudio/connector/reference#datatype).
 
 * A simple example.
 
@@ -15,7 +15,7 @@ This document includes the following content:
 
 You can install `TDengine server` with `taosAdapter` or just using `TDengine cloud`.
 
-* [Install TDengine server](https://tdengine.com/getting-started/install), and the server must be accessible for Google Data Studio(host is publicly-accessible).
+* [Install TDengine server](https://tdengine.com/getting-started/install), and the server must be accessible for Google Looker Studio(host is publicly-accessible).
 
 * [Install taosAdapter](https://github.com/taosdata/taosadapter#install-taosadapter) and make sure [taosAdapter](https://github.com/taosdata/taosadapter#startstop-taosadapter) has been started successfully.
 
@@ -109,7 +109,7 @@ select * from test.demo where ts >= '2022-05-10 18:24:15' and ts<='2022-05-12 18
 
 Indeed, through these filters, you can improve the data loading speed in your report.
 
-## Match with Google Data Studio [ConceptType](https://developers.google.com/datastudio/connector/reference#concepttype) and [DataType](https://developers.google.com/datastudio/connector/reference#datatype)
+## Match with Google Looker Studio [ConceptType](https://developers.google.com/datastudio/connector/reference#concepttype) and [DataType](https://developers.google.com/datastudio/connector/reference#datatype)
 
 ### ConceptType
 
@@ -117,7 +117,7 @@ Currently, we set TDengine's TAG columns and timestamp columns as dimensions, an
 
 ### DataType
 
-TDengine's data type mapping with Google Data Studio's field type. You can refer to the following matrix.
+TDengine's data type mapping with Google Looker Studio's field type. You can refer to the following matrix.
 |TDengine's DataType    |GDS's DataType        |
 |:-----------------------|:----------------------|
 | BOOL                   | BOOLEAN               |

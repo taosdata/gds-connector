@@ -8,7 +8,7 @@
     "companyUrl": "https://tdengine.com/",
     "addonUrl": "https://github.com/taosdata/gds-connector/blob/master/README.md",
     "supportUrl": "https://github.com/taosdata/gds-connector/issues/new?title\u003dTDengine%20GDS%20connector%20Issue",
-    "description": "This a TDengine connector for Google Data Studio, user can access the data stored in TDengine. This connector is implemented based on TDengine\u0027s RESTful APIs.",
+    "description": "This a TDengine connector for Google Looker Studio, user can access the data stored in TDengine. This connector is implemented based on TDengine\u0027s RESTful APIs.",
     "sources": ["TDENGINE"],
     "shortDescription": "Using this connector you can access the data store in TDengine.",
     "authType": ["NONE"],
